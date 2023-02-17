@@ -1,5 +1,10 @@
+import os
+
 import baseten
 import truss
+
+baseten.configure("https://app.baseten.co")
+baseten.login(os.environ["BASETEN_API_KEY"])
 
 # Deploy first model
 sd = truss.load("./sd_v2-1_truss/")

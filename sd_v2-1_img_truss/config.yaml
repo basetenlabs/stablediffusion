@@ -20,6 +20,8 @@ requirements:
 - accelerate
 - scipy
 - safetensors
+- xformers
+- triton
 resources:
   accelerator: A10G
   cpu: "8"

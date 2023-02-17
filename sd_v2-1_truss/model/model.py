@@ -1,8 +1,9 @@
 from dataclasses import asdict
-from typing import Dict, List
+from typing import Dict
 
+import numpy as np
 import torch
-from diffusers import DPMSolverMultistepScheduler, StableDiffusionPipeline
+from diffusers import EulerDiscreteScheduler, StableDiffusionPipeline
 
 
 class Model:
@@ -11,15 +12,17 @@ class Model:
         self._model = None
 
     def load(self):
-        # Load model here and assign to self._model.
-
+        scheduler = EulerDiscreteScheduler.from_pretrained(
+            str(self._data_dir), subfolder="scheduler"
+        )
         self._model = StableDiffusionPipeline.from_pretrained(
-            str(self._data_dir), torch_dtype=torch.float16
+            str(self._data_dir), scheduler=scheduler, torch_dtype=torch.float16
         )
-        self._model.scheduler = DPMSolverMultistepScheduler.from_config(
-            self._model.scheduler.config
-        )
+        self._model.unet.set_use_memory_efficient_attention_xformers(True)
         self._model = self._model.to("cuda")
 
     def predict(self, request: Dict):
-        return asdict(self._model(**request, output_type="numpy"))
+        response = asdict(self._model(**request))
+        # Convert to numpy to send back
+        response["images"] = [np.asarray(img) for img in response["images"]]
+        return response
