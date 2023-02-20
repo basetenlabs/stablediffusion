@@ -1,3 +1,4 @@
+import time
 from typing import Dict, List
 
 import numpy as np
@@ -28,6 +29,7 @@ class Model:
         # Do np to PIL conversion
         image = Image.fromarray(np.asarray(image), "RGB")
 
+        tic = time.perf_counter()
         # Pre-process
         inputs = self._processor(
             image, task_inputs=["panoptic"], return_tensors="pt"
@@ -44,6 +46,8 @@ class Model:
             segment_label_id = segment["label_id"]
             segment["label"] = self._model.config.id2label[segment_label_id]
 
+        toc = time.perf_counter()
+        print(f"Model calls took {toc - tic:0.4f} seconds")
         panoptic_segmentation["segmentation"] = (
             panoptic_segmentation["segmentation"].cpu().numpy()
         )
