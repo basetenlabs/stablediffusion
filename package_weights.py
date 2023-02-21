@@ -11,4 +11,4 @@ StableDiffusionPipeline.from_pretrained(
         subfolder="scheduler",
     ),
     torch_dtype=torch.float16,
-).save_pretrained("./sd_v2-1_truss/data")
+).save_pretrained("./difussion_2-1/data")
