@@ -1,5 +1,6 @@
 import os
 
+import baseten
 import truss
 
 
@@ -15,8 +16,8 @@ sd = truss.load("./difussion_2-1/")
 # Local testing
 # sd.docker_predict({"prompt": "a photo of an astronaut riding a horse on mars"})
 
+
 # Deploy to baseten
-import baseten
 baseten.configure("https://app.baseten.co")
 baseten.login(os.environ["BASETEN_API_KEY"])
 # One-line deploy:
